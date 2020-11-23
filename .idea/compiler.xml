@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="meinian_interface" />
+        <module name="meinian_web" />
+        <module name="mbg" />
+        <module name="meinian_service" />
+        <module name="meinian_dao" />
+        <module name="meinian_pojo" />
+        <module name="meinian_common" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="interface" target="1.8" />
+      <module name="pojo" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
