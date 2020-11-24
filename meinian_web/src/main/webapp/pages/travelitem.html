@@ -225,6 +225,22 @@
             },
             //钩子函数，VUE对象初始化完成后自动执行
             created() {
+                var params = {
+                    currentPage:this.pagination.currentPage,
+                    pageSize:this.pagination.pageSize,
+                    queryString:null
+                }
+                axios.post("/travelItem/findPage.do",params)
+                .then((response) => {
+                    this.dataList = response.data.rows;
+                    this.pagination.total = response.data.total;
+                })
+                .catch((response) => {
+                    this.$message({
+                        message:"获取分页失败",
+                        type:"error"
+                    })
+                })
             },
             methods: {
                 //编辑
@@ -268,6 +284,20 @@
                 },
                 //分页查询
                 findPage() {
+                    //分页对象：pagination
+                    //分页参数：pagination.currentPage,pagination.pageSize,pagination.queryString,pagination.total
+                    var param = {
+                        currentPage:this.pagination.currentPage,    //当前页码
+                        pageSize:this.pagination.pageSize,      //每页显示的记录数
+                        queryString:this.pagination.queryString     //查询条件
+                    }
+                    //请求后台
+                    axios.post("/travelItem/findPage.do",param)
+                    .then((response) => {
+                        //为模型数据赋值，基于VUE双向绑定展示到页面
+                        this.dataList = response.data.rows;
+                        this.pagination.total = response.data.total;
+                    })
                 },
                 // 重置表单
                 resetForm() {
@@ -283,6 +313,9 @@
                 },
                 //切换页码
                 handleCurrentChange(currentPage) {
+                    //currentPage为切换后的页码
+                    this.pagination.currentPage = currentPage;
+                    this.findPage();
                 },
                 // 删除
                 handleDelete(row) {
