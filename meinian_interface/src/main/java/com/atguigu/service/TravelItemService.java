@@ -13,4 +13,10 @@ public interface TravelItemService {
     void add(TravelItem travelItem);
 
     PageResult findPage(QueryPageBean queryPageBean);
+
+    void deleteItemById(Integer id);
+
+    TravelItem findById(Integer id);
+
+    void edit(TravelItem travelItem);
 }

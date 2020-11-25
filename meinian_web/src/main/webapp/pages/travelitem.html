@@ -225,26 +225,45 @@
             },
             //钩子函数，VUE对象初始化完成后自动执行
             created() {
-                var params = {
-                    currentPage:this.pagination.currentPage,
-                    pageSize:this.pagination.pageSize,
-                    queryString:null
-                }
-                axios.post("/travelItem/findPage.do",params)
-                .then((response) => {
-                    this.dataList = response.data.rows;
-                    this.pagination.total = response.data.total;
-                })
-                .catch((response) => {
-                    this.$message({
-                        message:"获取分页失败",
-                        type:"error"
-                    })
-                })
+                this.findPage();
             },
             methods: {
                 //编辑
                 handleEdit() {
+                    this.$refs['dataEditForm'].validate((valid) =>{
+                        if(valid){
+                            axios.post("/travelItem/edit.do",this.formData)
+                            .then((resp) =>{
+                                this.dialogFormVisible4Edit = false;
+                                if(resp.data.flag){
+                                    this.$message({
+                                        message:"修改成功",
+                                        type:"success"
+                                    })
+                                } else {
+                                    this.$message({
+                                        message:"修改失败",
+                                        type:"error"
+                                    })
+                                }
+                            })
+                            .catch((resp) =>{
+                                this.$message({
+                                    message:"请求失败",
+                                    type:"error"
+                                })
+                            })
+                            .finally((resp) =>{
+                                this.findPage();
+                            })
+                        }
+                    })
+                    .catch((resp) =>{
+                        this.$message({
+                            message:"表单验证失败",
+                            type:"error"
+                        })
+                    });
                 },
                 //添加
                 handleAdd() {
@@ -277,7 +296,7 @@
                                 })
                             })
                                 .finally(() => {
-
+                                    this.findPage();
                                 })
                         }
                     })
@@ -286,18 +305,22 @@
                 findPage() {
                     //分页对象：pagination
                     //分页参数：pagination.currentPage,pagination.pageSize,pagination.queryString,pagination.total
-                    var param = {
-                        currentPage:this.pagination.currentPage,    //当前页码
-                        pageSize:this.pagination.pageSize,      //每页显示的记录数
-                        queryString:this.pagination.queryString     //查询条件
+                    var params = {
+                        currentPage:this.pagination.currentPage,
+                        pageSize:this.pagination.pageSize,
+                        queryString:this.pagination.queryString
                     }
-                    //请求后台
-                    axios.post("/travelItem/findPage.do",param)
-                    .then((response) => {
-                        //为模型数据赋值，基于VUE双向绑定展示到页面
-                        this.dataList = response.data.rows;
-                        this.pagination.total = response.data.total;
-                    })
+                    axios.post("/travelItem/findPage.do",params)
+                        .then((response) => {
+                            this.dataList = response.data.rows;
+                            this.pagination.total = response.data.total;
+                        })
+                        .catch((response) => {
+                            this.$message({
+                                message:"获取分页失败",
+                                type:"error"
+                            })
+                        })
                 },
                 // 重置表单
                 resetForm() {
@@ -310,6 +333,23 @@
                 },
                 // 弹出编辑窗口
                 handleUpdate(row) {
+                    axios.get("/travelItem/findById.do?id="+row.id)
+                    .then((resp) =>{
+                        if(resp.data.flag){
+                            this.dialogFormVisible4Edit = true;
+                            this.formData = resp.data.data;
+                        }
+
+                    })
+                    .catch((resp) =>{
+                        this.$message({
+                            message:"获取数据失败，请刷新重试",
+                            type:"error"
+                        })
+                    })
+                    .finally(() =>{
+
+                    })
                 },
                 //切换页码
                 handleCurrentChange(currentPage) {
@@ -319,25 +359,44 @@
                 },
                 // 删除
                 handleDelete(row) {
-					this.$confirm('此操作将永久删除该自由行, 是否继续?', '提示', {
-						confirmButtonText: '确定',
-						cancelButtonText: '取消',
-						type: 'warning',
-						center: true
-					}).then(() => {
-						// 发送ajax请求，执行删除
+                    this.$confirm('此操作将永久删除该自由行, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                        center: true
+                    }).then(() => {
+                        // 发送ajax请求，执行删除
+                        axios.get('/travelItem/delete.do?id='+row.id)
+                            .then((resp)=>{
+                                if(resp.data.flag){
+                                    this.$message({
+                                        type: 'success',
+                                        message: '删除成功!'
+                                    });
+                                }else{
+                                    this.$message({
+                                        type: 'error',
+                                        message: resp.data.message
+                                    });
+                                }
+                            })
+                            .catch((resp)=>{
+                                this.$message({
+                                    type: 'error',
+                                    message: '请求失败!'
+                                });
+                            })
+                            .finally((resp)=>{
+                                this.findPage();
+                            });
 
 
-						this.$message({
-							type: 'success',
-							message: '删除成功!'
-						});
-					}).catch(() => {
-						this.$message({
-							type: 'info',
-							message: '已取消删除'
-						});
-					});
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
                 }
             }
         })
