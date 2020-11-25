@@ -1,12 +1,12 @@
 package com.atguigu.service;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.atguigu.dao.TravelGroupTravelItemMapper;
 import com.atguigu.dao.TravelItemDao;
 import com.atguigu.dao.TravelItemMapper;
 import com.atguigu.entity.PageResult;
 import com.atguigu.entity.QueryPageBean;
-import com.atguigu.pojo.TravelItem;
-import com.atguigu.pojo.TravelItemExample;
+import com.atguigu.pojo.*;
 import com.atguigu.service.TravelItemService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -28,6 +28,8 @@ public class TravelItemServiceImpl implements TravelItemService {
 
     @Autowired  //dao层注入为本地注入，所以不是@Service，而是@Autowired
     private TravelItemMapper travelItemMapper;
+    @Autowired
+    private TravelGroupTravelItemMapper travelGroupTravelItemMapper;
 
     @Override
     public void add(TravelItem travelItem) {
@@ -47,9 +49,54 @@ public class TravelItemServiceImpl implements TravelItemService {
         PageHelper.startPage(currentPage,pageSize);
 
         TravelItemExample example = new TravelItemExample();
+
+        //防止空指针
+        if(queryPageBean.getQueryString() != null && queryPageBean.getQueryString() != ""){
+
+            //查询条件1
+            TravelItemExample.Criteria criteria1 = example.createCriteria();
+            criteria1.andCodeEqualTo(queryPageBean.getQueryString());
+
+            //查询条件2
+            TravelItemExample.Criteria criteria2 = example.createCriteria();
+            criteria2.andNameLike("%" + queryPageBean.getQueryString() + "%");
+
+            example.or(criteria2);  //默认是and关系，必须修改成or才能是或关系
+
+        }
+
+        //按照example的逻辑查询结果
         List<TravelItem> travelItems = travelItemMapper.selectByExample(example);
 
         PageInfo<TravelItem> page = new PageInfo<>(travelItems);
+        //PageResult实现了Serializable接口，可以实现远程传输
         return new PageResult(page.getTotal(), page.getList());
+    }
+
+    @Override
+    public void deleteItemById(Integer id) {
+
+        TravelGroupTravelItemExample example = new TravelGroupTravelItemExample();
+        TravelGroupTravelItemExample.Criteria criteria = example.createCriteria();
+        criteria.andTravelgroupIdEqualTo(id);
+        List<TravelGroupTravelItemKey> travelGroupTravelItemKeys = travelGroupTravelItemMapper.selectByExample(example);
+
+        //有关联数据，报异常，退出不让删除
+        if(travelGroupTravelItemKeys != null && travelGroupTravelItemKeys.size() > 0){
+            throw new RuntimeException("有关联数据");
+        }
+
+        //允许删除
+        travelItemMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public TravelItem findById(Integer id) {
+        return travelItemMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public void edit(TravelItem travelItem) {
+        travelItemMapper.updateByPrimaryKey(travelItem);
     }
 }
