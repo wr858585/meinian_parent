@@ -13,6 +13,7 @@
     <module>meinian_interface</module>
     <module>meinian_service</module>
     <module>meinian_web</module>
+      <module>meinian_mobile_web</module>
   </modules>
   <packaging>pom</packaging>
 

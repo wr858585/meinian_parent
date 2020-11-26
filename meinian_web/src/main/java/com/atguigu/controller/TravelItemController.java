@@ -62,7 +62,7 @@ public class TravelItemController {
             return  new Result(true,MessageConstant.DELETE_TRAVELITEM_SUCCESS);
         }catch (Exception ex){
             ex.printStackTrace();
-            return  new Result(false,ex.getMessage());
+            return new Result(false,ex.getMessage());
         }
     }
 
