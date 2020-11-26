@@ -52,9 +52,11 @@
 
 
         <!-- 数据库表名字和我们的entity类对应的映射指定 -->
-        <table tableName="t_travelitem" domainObjectName="TravelItem"></table>
+<!--        <table tableName="t_travelitem" domainObjectName="TravelItem"></table>
         <table tableName="t_travelgroup" domainObjectName="TravelGroup"></table>
-        <table tableName="t_travelgroup_travelitem" domainObjectName="TravelGroupTravelItem"></table>
+        <table tableName="t_travelgroup_travelitem" domainObjectName="TravelGroupTravelItem"></table>-->
+        <table tableName="t_ordersetting" domainObjectName="OrderSetting"></table>
+
 
 
     </context>

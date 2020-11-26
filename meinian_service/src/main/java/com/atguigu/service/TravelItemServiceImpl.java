@@ -20,8 +20,6 @@ import java.util.List;
  * @date 2020 11 23
  */
 
-
-
 @Service(interfaceClass = TravelItemService.class)
 @Transactional
 public class TravelItemServiceImpl implements TravelItemService {
@@ -78,7 +76,7 @@ public class TravelItemServiceImpl implements TravelItemService {
 
         TravelGroupTravelItemExample example = new TravelGroupTravelItemExample();
         TravelGroupTravelItemExample.Criteria criteria = example.createCriteria();
-        criteria.andTravelgroupIdEqualTo(id);
+        criteria.andTravelitemIdEqualTo(id);
         List<TravelGroupTravelItemKey> travelGroupTravelItemKeys = travelGroupTravelItemMapper.selectByExample(example);
 
         //有关联数据，报异常，退出不让删除

@@ -10,6 +10,7 @@
         <module name="meinian_web" />
         <module name="mbg" />
         <module name="meinian_service" />
+        <module name="meinian_mobile_web" />
         <module name="meinian_dao" />
         <module name="meinian_pojo" />
         <module name="meinian_common" />

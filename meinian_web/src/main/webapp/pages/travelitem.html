@@ -366,6 +366,7 @@
                         center: true
                     }).then(() => {
                         // 发送ajax请求，执行删除
+                        alert(row.id);
                         axios.get('/travelItem/delete.do?id='+row.id)
                             .then((resp)=>{
                                 if(resp.data.flag){

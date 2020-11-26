@@ -3,6 +3,7 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/interface" />
+    <file type="web" url="file://$PROJECT_DIR$/meinian_mobile_web" />
     <file type="web" url="file://$PROJECT_DIR$/meinian_pojo" />
     <file type="web" url="file://$PROJECT_DIR$/meinian_service" />
     <file type="web" url="file://$PROJECT_DIR$/meinian_web" />
