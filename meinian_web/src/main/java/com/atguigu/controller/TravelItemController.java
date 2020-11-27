@@ -10,6 +10,9 @@ import com.atguigu.service.TravelItemService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.util.List;
+
 /**
  * @author oono
  * @date 2020 11 23
@@ -25,7 +28,13 @@ public class TravelItemController {
     @ResponseBody
     @RequestMapping("/findAll")
     public Result findAll(){
-        return null;
+        try {
+            List<TravelItem> list = travelItemService.findAll();
+            return new Result(true, MessageConstant.QUERY_TRAVELITEM_SUCCESS,list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, MessageConstant.QUERY_TRAVELITEM_FAIL);
+        }
     }
 
     @RequestMapping("/edit")

@@ -67,7 +67,7 @@
                                 <span>{{ scope.row.sex == '0' ? '不限' : scope.row.sex == '1' ? '男' : '女'}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="helpCode" label="助记码" align="center"></el-table-column>
+                        <el-table-column prop="helpcode" label="助记码" align="center"></el-table-column>
                         <el-table-column prop="remark" label="说明" align="center"></el-table-column>
                         <el-table-column label="操作" align="center">
                             <template slot-scope="scope">
@@ -92,10 +92,10 @@
                             <template>
                                 <el-tabs v-model="activeName" type="card">
                                     <el-tab-pane label="基本信息" name="first">
-                                        <el-form label-position="right" label-width="100px">
+                                        <el-form :model="formData" label-position="right" :rules="rules" ref="formData"  label-width="100px">
                                             <el-row>
                                                 <el-col :span="12">
-                                                    <el-form-item label="编码">
+                                                    <el-form-item label="编码" prop="code">
                                                         <el-input v-model="formData.code"/>
                                                     </el-form-item>
                                                 </el-col>
@@ -117,7 +117,7 @@
                                                 </el-col>
                                                 <el-col :span="12">
                                                     <el-form-item label="助记码">
-                                                        <el-input v-model="formData.helpCode"/>
+                                                        <el-input v-model="formData.helpcode"/>
                                                     </el-form-item>
                                                 </el-col>
                                             </el-row>
@@ -201,7 +201,7 @@
                                                 </el-col>
                                                 <el-col :span="12">
                                                     <el-form-item label="助记码">
-                                                        <el-input v-model="formData.helpCode"/>
+                                                        <el-input v-model="formData.helpcode"/>
                                                     </el-form-item>
                                                 </el-col>
                                             </el-row>
@@ -274,7 +274,13 @@
                 tableData:[],//新增和编辑表单中对应的自由行列表数据
                 travelItemIds:[],//新增和编辑表单中自由行对应的复选框，基于双向绑定可以进行回显和数据提交
                 dialogFormVisible: false,//控制添加窗口显示/隐藏
-                dialogFormVisible4Edit:false//控制编辑窗口显示/隐藏
+                dialogFormVisible4Edit:false, //控制编辑窗口显示/隐藏
+                rules:{//from ElementUI
+                    code: [
+                        { required: true, message: '请输入活动名称', trigger: 'blur' },
+                        { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                    ]
+                }
             },
             created() {
                 this.findPage();
@@ -285,13 +291,64 @@
                 },
                 //添加
                 handleAdd () {
+                    this.$refs['formData'].validate((valid) =>{
+                        if(valid){
+                            axios.post("/travelgroup/add.do?travelItemIds="+this.travelItemIds,this.formData)
+                            .then((response)=>{
+                                this.dialogFormVisible = false;
+                                if(response.data.flag){
+                                    this.$message({
+                                        type:"success",
+                                        message:"添加成功"
+                                    })
+                                }else{
+                                    this.$message({
+                                        type:"error",
+                                        message:"添加失败"
+                                    })
+                                }
+                            })
+                            .catch((response)=>{
+                                this.$message({
+                                    type:"error",
+                                    message:"请求失败"
+                                })
+                            })
+                            .finally((response)=>{
+                                this.findPage();
+                            });
+                        }else{
+                            this.$message({
+                                type:"error",
+                                message:"表单验证失败"
+                            })
+                        }
+                    })
                 },
                 //分页查询
                 findPage() {
+                    var params = {
+                        currentPage:this.pagination.currentPage,
+                        pageSize:this.pagination.pageSize,
+                        queryString:this.pagination.queryString
+                    }
+                    axios.post("/travelgroup/findPage.do",params)
+                    .then((response)=>{
+                        this.dataList = response.data.rows;
+                        this.pagination.total = response.data.total;
+                    })
+                    .catch((response)=>{
+                        this.$message({
+                            type:"error",
+                            message:"请求失败"
+                        })
+                    })
                 },
                 // 重置表单
                 resetForm() {
                     this.formData = {};
+                    this.travelItemIds = [];
+                    this.activeNames = "first"
                 },
                 // 弹出添加窗口
                 handleCreate() {
@@ -300,20 +357,109 @@
 
                     axios.get("/travelItem/findAll.do")
                     .then((response) =>{
-
+                        //将controller层查询回来的list(所有自由行项目)，返回给vue对象的tableData属性！
+                        //用于相应页面组件使用
+                        if(response.data.flag){
+                            this.tableData = response.data.data;
+                        }else {
+                            this.$message({
+                                type: "error",
+                                message: "获取自由行信息失败"
+                            })
+                        }
                     })
                     .catch((response) =>{
-
+                        this.$message({
+                            type:"error",
+                            message:"请求失败"
+                        })
                     })
                 },
                 // 弹出编辑窗口
                 handleUpdate(row) {
+                    axios.get("/travelgroup/findById.do?id="+row.id)
+                    .then((response)=>{
+                        if(response.data.flag){
+                            this.dialogFormVisible4Edit = true;
+                            this.formData = response.data.data;
+
+                            axios.get("/travelgroup/findAll.do")
+                            .then((response)=>{
+                                if(response.data.flag){
+                                    this.tableData = response.data.data;
+                                }else {
+                                    this.$message({
+                                        type:"error",
+                                        message:"请求失败"
+                                    })
+                                }
+                            })
+                            .catch((response)=>{
+                                this.$message({
+                                    type:"error",
+                                    message:"请求失败"
+                                })
+                            })
+
+                        }else {
+                            this.$message({
+                                type:"error",
+                                message:"获取数据失败，请刷新列表"
+                            })
+                        }
+                    })
+                    .catch((response)=>{
+                        this.$message({
+                            type:"error",
+                            message:"请求失败"
+                        })
+                    })
                 },
                 //切换页码
                 handleCurrentChange(currentPage) {
+                    this.pagination.currentPage = currentPage;
+                    this.findPage();
                 },
                 // 删除
                 handleDelete(row) {
+                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        axios.get("/travelgroup/delete.do?id="+row.id)
+                        .then((response)=>{
+                            if(response.data.flag){
+                                this.$message({
+                                    type:"success",
+                                    message:"删除成功"
+                                })
+                            }else {
+                                this.$message({
+                                    type:"error",
+                                    message:"删除失败"
+                                })
+                            }
+                        })
+                        .catch((response)=>{
+                            this.$message({
+                                type:"error",
+                                message:"请求失败"
+                            })
+                        })
+                        .finally((response)=>{
+                            this.findPage();
+                        })
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
                 }
             }
         })

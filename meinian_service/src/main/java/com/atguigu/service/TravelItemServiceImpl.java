@@ -97,4 +97,10 @@ public class TravelItemServiceImpl implements TravelItemService {
     public void edit(TravelItem travelItem) {
         travelItemMapper.updateByPrimaryKey(travelItem);
     }
+
+    @Override
+    public List<TravelItem> findAll() {
+        TravelItemExample example = new TravelItemExample();
+        return travelItemMapper.selectByExample(example);
+    }
 }

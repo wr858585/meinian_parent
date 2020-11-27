@@ -1,5 +1,6 @@
 package com.atguigu.dao;
 
+import com.atguigu.pojo.TravelGroup;
 import com.atguigu.pojo.TravelGroupTravelItemExample;
 import com.atguigu.pojo.TravelGroupTravelItemKey;
 import org.apache.ibatis.annotations.Param;
@@ -22,4 +23,6 @@ public interface TravelGroupTravelItemMapper {
     int updateByExampleSelective(@Param("record") TravelGroupTravelItemKey record, @Param("example") TravelGroupTravelItemExample example);
 
     int updateByExample(@Param("record") TravelGroupTravelItemKey record, @Param("example") TravelGroupTravelItemExample example);
+
+    void batchInsert(@Param("travelGroupId") Integer travelGroupId, @Param("travelItemIds") Integer[] travelItemIds);
 }
