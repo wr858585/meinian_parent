@@ -91,6 +91,12 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
+  <insert id="batchInsert">
+    insert into t_travelgroup_travelitem values
+    <foreach collection="travelItemIds" item="travelItemId" separator=",">
+      (#{travelGroupId},#{travelItemId})
+    </foreach>
+  </insert>
   <insert id="insert" parameterType="com.atguigu.pojo.TravelGroupTravelItemKey">
     insert into t_travelgroup_travelitem (travelgroup_id, travelitem_id)
     values (#{travelgroupId,jdbcType=INTEGER}, #{travelitemId,jdbcType=INTEGER})

@@ -4,6 +4,8 @@ import com.atguigu.entity.PageResult;
 import com.atguigu.entity.QueryPageBean;
 import com.atguigu.pojo.TravelItem;
 
+import java.util.List;
+
 /**
  * @author oono
  * @date 2020 11 23
@@ -19,4 +21,6 @@ public interface TravelItemService {
     TravelItem findById(Integer id);
 
     void edit(TravelItem travelItem);
+
+    List<TravelItem> findAll();
 }

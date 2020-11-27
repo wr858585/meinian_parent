@@ -101,7 +101,8 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.atguigu.pojo.TravelGroup">
+
+  <insert id="insert" parameterType="com.atguigu.pojo.TravelGroup" useGeneratedKeys="true" keyProperty="id">
     insert into t_travelgroup (id, code, name, 
       helpCode, sex, remark, 
       attention)
