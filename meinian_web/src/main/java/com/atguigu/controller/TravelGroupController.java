@@ -6,7 +6,9 @@ import com.atguigu.entity.PageResult;
 import com.atguigu.entity.QueryPageBean;
 import com.atguigu.entity.Result;
 import com.atguigu.pojo.TravelGroup;
+import com.atguigu.pojo.TravelItem;
 import com.atguigu.service.TravelGroupService;
+import com.atguigu.service.TravelItemService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +27,44 @@ public class TravelGroupController {
 
     @Reference
     private TravelGroupService travelGroupService;
+
+    @Reference
+    private TravelItemService travelItemService;
+
+    @RequestMapping("/findAll")
+    public Result findAll(){
+        try {
+            List<TravelGroup> travelGroups = travelGroupService.findAll();
+            return new Result(true, MessageConstant.QUERY_TRAVELGROUP_SUCCESS, travelGroups);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, MessageConstant.QUERY_TRAVELGROUP_SUCCESS);
+        }
+    }
+
+    @RequestMapping("/edit")
+    //第一个参数travelItemIds，是带在请求的参数里的，所以可以直接获取
+    //第二个参数travelGroup，是传的Json数据并非带在参数中传过来的，则需要@RequestBody封装成可以装得下该Json数据的pojo类
+    public Result edit(Integer[] travelItemIds, @RequestBody TravelGroup travelGroup){
+        try {
+            travelGroupService.edit(travelItemIds, travelGroup);
+            return new Result(true, MessageConstant.EDIT_TRAVELGROUP_SUCCESS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, MessageConstant.EDIT_TRAVELGROUP_FAIL);
+        }
+    }
+
+    @RequestMapping("/findTravelItemIdByTravelGroupId")
+    public Result findTravelItemIdByTravelGroupId(Integer id){
+        try {
+            List<TravelItem> travelItems = travelItemService.findTravelItemIdByTravelGroupId(id);
+            return new Result(true, MessageConstant.QUERY_TRAVELGROUP_SUCCESS,travelItems);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, MessageConstant.QUERY_TRAVELGROUP_FAIL);
+        }
+    }
 
     //根据id查询跟团游信息
     @RequestMapping("/findById")

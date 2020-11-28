@@ -103,4 +103,9 @@ public class TravelItemServiceImpl implements TravelItemService {
         TravelItemExample example = new TravelItemExample();
         return travelItemMapper.selectByExample(example);
     }
+
+    @Override
+    public List<TravelItem> findTravelItemIdByTravelGroupId(Integer id) {
+        return travelGroupTravelItemMapper.selectTravelItemIdsByTravelGroupId(id);
+    }
 }

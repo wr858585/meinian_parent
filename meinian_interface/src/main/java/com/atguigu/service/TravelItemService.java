@@ -23,4 +23,6 @@ public interface TravelItemService {
     void edit(TravelItem travelItem);
 
     List<TravelItem> findAll();
+
+    List<TravelItem> findTravelItemIdByTravelGroupId(Integer id);
 }

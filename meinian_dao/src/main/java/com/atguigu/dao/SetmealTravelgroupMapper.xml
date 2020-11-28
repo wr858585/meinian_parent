@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.atguigu.dao.TravelGroupTravelItemMapper">
-  <resultMap id="BaseResultMap" type="com.atguigu.pojo.TravelGroupTravelItemKey">
+<mapper namespace="com.atguigu.dao.SetmealTravelgroupMapper">
+  <resultMap id="BaseResultMap" type="com.atguigu.pojo.SetmealTravelgroupKey">
+    <id column="setmeal_id" jdbcType="INTEGER" property="setmealId" />
     <id column="travelgroup_id" jdbcType="INTEGER" property="travelgroupId" />
-    <id column="travelitem_id" jdbcType="INTEGER" property="travelitemId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -64,15 +64,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    travelgroup_id, travelitem_id
+    setmeal_id, travelgroup_id
   </sql>
-  <select id="selectByExample" parameterType="com.atguigu.pojo.TravelGroupTravelItemExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.atguigu.pojo.SetmealTravelgroupExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from t_travelgroup_travelitem
+    from t_setmeal_travelgroup
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -80,63 +80,54 @@
       order by ${orderByClause}
     </if>
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.atguigu.pojo.TravelGroupTravelItemKey">
-    delete from t_travelgroup_travelitem
-    where travelgroup_id = #{travelgroupId,jdbcType=INTEGER}
-      and travelitem_id = #{travelitemId,jdbcType=INTEGER}
+  <delete id="deleteByPrimaryKey" parameterType="com.atguigu.pojo.SetmealTravelgroupKey">
+    delete from t_setmeal_travelgroup
+    where setmeal_id = #{setmealId,jdbcType=INTEGER}
+      and travelgroup_id = #{travelgroupId,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.atguigu.pojo.TravelGroupTravelItemExample">
-    delete from t_travelgroup_travelitem
+  <delete id="deleteByExample" parameterType="com.atguigu.pojo.SetmealTravelgroupExample">
+    delete from t_setmeal_travelgroup
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="batchInsert">
-    insert into t_travelgroup_travelitem values
-    <foreach collection="travelItemIds" item="travelItemId" separator=",">
-      (#{travelGroupId},#{travelItemId})
-    </foreach>
+  <insert id="insert" parameterType="com.atguigu.pojo.SetmealTravelgroupKey">
+    insert into t_setmeal_travelgroup (setmeal_id, travelgroup_id)
+    values (#{setmealId,jdbcType=INTEGER}, #{travelgroupId,jdbcType=INTEGER})
   </insert>
-  <insert id="insert" parameterType="com.atguigu.pojo.TravelGroupTravelItemKey">
-    insert into t_travelgroup_travelitem (travelgroup_id, travelitem_id)
-    values (#{travelgroupId,jdbcType=INTEGER}, #{travelitemId,jdbcType=INTEGER})
-  </insert>
-  <insert id="insertSelective" parameterType="com.atguigu.pojo.TravelGroupTravelItemKey">
-    insert into t_travelgroup_travelitem
+  <insert id="insertSelective" parameterType="com.atguigu.pojo.SetmealTravelgroupKey">
+    insert into t_setmeal_travelgroup
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="setmealId != null">
+        setmeal_id,
+      </if>
       <if test="travelgroupId != null">
         travelgroup_id,
       </if>
-      <if test="travelitemId != null">
-        travelitem_id,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="setmealId != null">
+        #{setmealId,jdbcType=INTEGER},
+      </if>
       <if test="travelgroupId != null">
         #{travelgroupId,jdbcType=INTEGER},
       </if>
-      <if test="travelitemId != null">
-        #{travelitemId,jdbcType=INTEGER},
-      </if>
     </trim>
   </insert>
-  <select id="selectTravelItemIdsByTravelGroupId" resultType="java.lang.Integer">
-    select travelitem_id from t_travelgroup_travelitem where travelgroup_id = #{id}
-  </select>
-  <select id="countByExample" parameterType="com.atguigu.pojo.TravelGroupTravelItemExample" resultType="java.lang.Long">
-    select count(*) from t_travelgroup_travelitem
+  <select id="countByExample" parameterType="com.atguigu.pojo.SetmealTravelgroupExample" resultType="java.lang.Long">
+    select count(*) from t_setmeal_travelgroup
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update t_travelgroup_travelitem
+    update t_setmeal_travelgroup
     <set>
+      <if test="record.setmealId != null">
+        setmeal_id = #{record.setmealId,jdbcType=INTEGER},
+      </if>
       <if test="record.travelgroupId != null">
         travelgroup_id = #{record.travelgroupId,jdbcType=INTEGER},
-      </if>
-      <if test="record.travelitemId != null">
-        travelitem_id = #{record.travelitemId,jdbcType=INTEGER},
       </if>
     </set>
     <if test="_parameter != null">
@@ -144,9 +135,9 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update t_travelgroup_travelitem
-    set travelgroup_id = #{record.travelgroupId,jdbcType=INTEGER},
-      travelitem_id = #{record.travelitemId,jdbcType=INTEGER}
+    update t_setmeal_travelgroup
+    set setmeal_id = #{record.setmealId,jdbcType=INTEGER},
+      travelgroup_id = #{record.travelgroupId,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>

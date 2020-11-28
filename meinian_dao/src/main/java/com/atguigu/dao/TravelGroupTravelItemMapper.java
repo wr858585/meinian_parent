@@ -3,6 +3,7 @@ package com.atguigu.dao;
 import com.atguigu.pojo.TravelGroup;
 import com.atguigu.pojo.TravelGroupTravelItemExample;
 import com.atguigu.pojo.TravelGroupTravelItemKey;
+import com.atguigu.pojo.TravelItem;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -25,4 +26,6 @@ public interface TravelGroupTravelItemMapper {
     int updateByExample(@Param("record") TravelGroupTravelItemKey record, @Param("example") TravelGroupTravelItemExample example);
 
     void batchInsert(@Param("travelGroupId") Integer travelGroupId, @Param("travelItemIds") Integer[] travelItemIds);
+
+    List<TravelItem> selectTravelItemIdsByTravelGroupId(Integer id);
 }

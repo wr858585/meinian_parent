@@ -7,6 +7,7 @@ import com.atguigu.entity.PageResult;
 import com.atguigu.entity.QueryPageBean;
 import com.atguigu.pojo.TravelGroup;
 import com.atguigu.pojo.TravelGroupExample;
+import com.atguigu.pojo.TravelGroupTravelItemExample;
 import com.atguigu.pojo.TravelGroupTravelItemKey;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -85,5 +86,25 @@ public class TravelGroupServiceImpl implements TravelGroupService {
     @Override
     public TravelGroup findById(Integer id) {
         return travelGroupMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public void edit(Integer[] travelItemIds, TravelGroup travelGroup) {
+        //1. 修改跟团游信息
+        travelGroupMapper.updateByPrimaryKey(travelGroup);
+        //2. 修改自由行ids --> 删除原有的ids，添加现在的ids
+        //删除原有的
+        TravelGroupTravelItemExample example = new TravelGroupTravelItemExample();
+        TravelGroupTravelItemExample.Criteria criteria = example.createCriteria();
+        criteria.andTravelgroupIdEqualTo(travelGroup.getId());
+        travelGroupTravelItemMapper.deleteByExample(example);
+        //添加新增的（之前已经写好中间表的batchInsert直接用）
+        travelGroupTravelItemMapper.batchInsert(travelGroup.getId(),travelItemIds);
+    }
+
+    @Override
+    public List<TravelGroup> findAll() {
+        TravelGroupExample example = new TravelGroupExample();
+        return travelGroupMapper.selectByExample(example);
     }
 }

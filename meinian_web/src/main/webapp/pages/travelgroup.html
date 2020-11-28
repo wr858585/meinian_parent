@@ -288,6 +288,31 @@
             methods: {
                 //编辑
                 handleEdit() {
+                    //发送请求，把前端编辑选中的自由行id，和填入的跟团游数据，全部发给controller层处理
+                    axios.post("/travelgroup/edit.do?travelItemIds="+this.travelItemIds,this.formData)
+                    .then((response)=>{
+                        this.dialogFormVisible4Edit = false;
+                        if(response.data.flag){
+                            this.$message({
+                                type:"success",
+                                message:response.data.message
+                            })
+                        }else {
+                            this.$message({
+                                type:"error",
+                                message:"请求失败"
+                            })
+                        }
+                    })
+                    .catch((response)=>{
+                        this.$message({
+                            type:"error",
+                            message:"请求失败"
+                        })
+                    })
+                    .finally((response)=>{
+                        this.findPage();
+                    })
                 },
                 //添加
                 handleAdd () {
@@ -377,16 +402,35 @@
                 },
                 // 弹出编辑窗口
                 handleUpdate(row) {
+                    //发送第一个请求，获取当前id的跟团游信息
                     axios.get("/travelgroup/findById.do?id="+row.id)
                     .then((response)=>{
                         if(response.data.flag){
                             this.dialogFormVisible4Edit = true;
                             this.formData = response.data.data;
-
-                            axios.get("/travelgroup/findAll.do")
+                            //发送第二个请求，获取所有的自由行信息（以便于可能的增加自由行在此id跟团游的操作）
+                            axios.get("/travelItem/findAll.do")
                             .then((response)=>{
                                 if(response.data.flag){
                                     this.tableData = response.data.data;
+                                    //发送第三个请求，获取当前id原有的自由行信息
+                                    axios.get("/travelgroup/findTravelItemIdByTravelGroupId.do?id="+row.id)
+                                    .then((response)=>{
+                                        if(response.data.flag){
+                                            this.travelItemIds = response.data.data;
+                                        }else {
+                                            this.$message({
+                                                type:"error",
+                                                message:"获取数据失败"
+                                            })
+                                        }
+                                    })
+                                    .catch((response)=>{
+                                        this.$message({
+                                            type:"error",
+                                            message:"请求失败"
+                                        })
+                                    })
                                 }else {
                                     this.$message({
                                         type:"error",
