@@ -206,9 +206,9 @@
 													<td>
 														<input :id="c.id" v-model="travelgroupIds" type="checkbox" :value="c.id">
 													</td>
-													<td><label :for="c.id">{{c.code}}</label></td>
-													<td><label :for="c.id">{{c.name}}</label></td>
-													<td><label :for="c.id">{{c.remark}}</label></td>
+													<td><label >{{c.code}}</label></td>
+													<td><label >{{c.name}}</label></td>
+													<td><label >{{c.remark}}</label></td>
 												</tr>
 												</tbody>
 											</table>
@@ -283,17 +283,40 @@
                 },
                 //添加
                 handleAdd () {
+                    //如果只上传图片而不选择跟团游信息，提交不成功
+                    if(this.travelgroupIds.length == 0){
+                        this.$message({
+                            type:"error",
+                            message:"请选择对应的跟团游信息"
+                        })
+                        return false;
+                    }
                     this.$refs['formData'].validate(valid=>{
                         if(valid){
-                            axios.post()
+                            //传两个数据给后端，一个是跟团游ids，带在请求里；一个是套餐游信息，封装在formData里的
+                            axios.post("/setmeal/add.do?travelgroupIds="+this.travelgroupIds,this.formData)
                             .then((response)=>{
-
+                                this.dialogFormVisible = false;
+                                if(response.data.flags){
+                                    this.$message({
+                                        type:"success",
+                                        message:"保存成功"
+                                    })
+                                }else{
+                                    this.$message({
+                                        type:"error",
+                                        message:"保存失败"
+                                    })
+                                }
                             })
                             .catch((response)=>{
-
+                                this.$message({
+                                    type:"error",
+                                    message:"请求失败"
+                                })
                             })
                             .finally((response)=>{
-
+                                this.findPage();
                             })
 
                         }else {
@@ -309,16 +332,24 @@
                 },
                 // 重置表单
                 resetForm() {
-                    this.formData = {};
+                    this.formData = {};     //清除表单数据 --> 这里的新增只有first tab有信息添加 --> 是套餐游信息编辑
+                    this.imageUrl = "";     //清空图片上传url
+                    this.travelgroupIds = [];   //清空上次新增选中的跟团游ids
+                    this.activeName = 'first';  //把选项卡重置到第一个 --> 套餐游信息（不然会跳回second tab --> 跟团游id选择信息界面）
                 },
                 // 弹出添加窗口
                 handleCreate() {
+
                     this.dialogFormVisible = true;
                     this.resetForm();
-                    this.travelItemIds = [];
 
                     axios.get("/travelgroup/findAll.do")
                     .then((response)=>{
+                        // console.log(response);
+                        // console.log(response.data);
+                        // console.log(response.data.flag);
+                        // console.log(response.data.message);
+                        // console.log(response.data.data);
                         if(response.data.flag){
                             this.tableData = response.data.data;
                         }else {

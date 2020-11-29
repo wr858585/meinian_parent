@@ -7,12 +7,14 @@
     <file type="web" url="file://$PROJECT_DIR$/meinian_pojo" />
     <file type="web" url="file://$PROJECT_DIR$/meinian_service" />
     <file type="web" url="file://$PROJECT_DIR$/meinian_web" />
+    <file type="web" url="file://$PROJECT_DIR$/../../workspace_idea4/spring_security_demo" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/mbg/pom.xml" />
+        <option value="$PROJECT_DIR$/../../workspace_idea4/spring_security_demo/pom.xml" />
       </list>
     </option>
   </component>
