@@ -206,9 +206,9 @@
 													<td>
 														<input :id="c.id" v-model="travelgroupIds" type="checkbox" :value="c.id">
 													</td>
-													<td><label >{{c.code}}</label></td>
-													<td><label >{{c.name}}</label></td>
-													<td><label >{{c.remark}}</label></td>
+													<td><label :for="c.id">{{c.code}}</label></td>
+													<td><label :for="c.id">{{c.name}}</label></td>
+													<td><label :for="c.id">{{c.remark}}</label></td>
 												</tr>
 												</tbody>
 											</table>
@@ -297,7 +297,7 @@
                             axios.post("/setmeal/add.do?travelgroupIds="+this.travelgroupIds,this.formData)
                             .then((response)=>{
                                 this.dialogFormVisible = false;
-                                if(response.data.flags){
+                                if(response.data.flag){
                                     this.$message({
                                         type:"success",
                                         message:"保存成功"

@@ -22,4 +22,6 @@ public interface SetmealTravelgroupMapper {
     int updateByExampleSelective(@Param("record") SetmealTravelgroupKey record, @Param("example") SetmealTravelgroupExample example);
 
     int updateByExample(@Param("record") SetmealTravelgroupKey record, @Param("example") SetmealTravelgroupExample example);
+
+    void batchInsert(@Param("id") Integer id, @Param("travelgroupIds") Integer[] travelgroupIds);
 }

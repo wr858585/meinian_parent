@@ -104,7 +104,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.atguigu.pojo.Setmeal">
+  <insert id="insert" parameterType="com.atguigu.pojo.Setmeal" useGeneratedKeys="true" keyProperty="id">
     insert into t_setmeal (id, name, code, 
       helpCode, sex, age, price, 
       remark, attention, img

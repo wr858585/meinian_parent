@@ -1,8 +1,10 @@
 package com.atguigu.controller;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.atguigu.constant.MessageConstant;
 import com.atguigu.entity.Result;
 import com.atguigu.pojo.Setmeal;
+import com.atguigu.service.SetmealService;
 import com.atguigu.utils.QiniuUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +24,18 @@ import java.util.UUID;
 @RequestMapping("/setmeal")
 public class SetmealController {
 
+    @Reference
+    private SetmealService setmealService;
 
     @RequestMapping("/add")
     public Result add(Integer[] travelgroupIds, @RequestBody Setmeal setmeal){
-    return null;
+        try {
+            setmealService.add(travelgroupIds, setmeal);
+            return new Result(true, MessageConstant.ADD_SETMEAL_SUCCESS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, MessageConstant.ADD_SETMEAL_FAIL);
+        }
     }
 
     /**
